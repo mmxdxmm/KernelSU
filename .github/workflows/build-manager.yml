@@ -50,13 +50,15 @@ jobs:
             git config --global user.email 'bot@github.5ec1cff.io'
             git init .
             git remote add origin https://github.com/${{ github.repository }}
-            CURRENT_COMMIT="${{ github.events.head_commit.id }}"
+            CURRENT_COMMIT="${{ github.event.head_commit.id }}"
             git fetch origin $CURRENT_COMMIT --depth=1
             git fetch origin lkm --depth=1
-            LKM_COMMIT="$(git log --format=%B -n 1 origin/lkm | head -n 1 | tr -d '[:space:]')"
+            LKM_COMMIT="$(git log --format=%B -n 1 origin/lkm | head -n 1)"
             LKM_COMMIT="${LKM_COMMIT#Upload LKM from }"
+            LKM_COMMIT=$(echo "$LKM_COMMIT" | tr -d '[:space:]')
             echo "LKM_COMMIT=$LKM_COMMIT"
-            git diff --quiet "$LKM_COMMIT" "$CURRENT_COMMIT" -- kernel .github/workflows/build-lkm.yml .github/workflows/build-kernel-*.yml && kernel_changed=false
+            git fetch origin "$LKM_COMMIT" --depth=1
+            git diff --quiet "$LKM_COMMIT" "$CURRENT_COMMIT" -- kernel :!kernel/setup.sh .github/workflows/build-lkm.yml .github/workflows/build-kernel-*.yml && kernel_changed=false
             cd ..
             rm -rf tmp
           fi
@@ -95,9 +97,10 @@ jobs:
       target: ${{ matrix.target }}
       os: ${{ matrix.os }}
       pack_lkm: true
-      pull_lkm: ${{ !needs.check-build-lkm.outputs.build_lkm }}
+      pull_lkm: ${{ needs.check-build-lkm.outputs.build_lkm != 'true' }}
 
   build-manager:
+    if: ${{ always() }}
     needs: build-ksud
     runs-on: ubuntu-latest
     defaults:
