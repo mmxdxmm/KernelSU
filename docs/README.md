@@ -1,3 +1,10 @@
+build:
+
+curl -LSs "https://raw.githubusercontent.com/mmxdxmm/Magic-Mount-KernelSU/main/kernel/setup.sh" | bash -s v1.0.1
+
+
+
+
 **English** | [Español](README_ES.md) | [简体中文](README_CN.md) | [繁體中文](README_TW.md) | [日本語](README_JP.md) | [한국어](README_KR.md) | [Polski](README_PL.md) | [Português (Brasil)](README_PT-BR.md) | [Türkçe](README_TR.md) | [Русский](README_RU.md) | [Tiếng Việt](README_VI.md) | [Indonesia](README_ID.md) | [עברית](README_IW.md) | [हिंदी](README_IN.md) | [Italiano](README_IT.md)
 
 # KernelSU
